@@ -14,6 +14,9 @@ public class BrickerGameManager extends GameManager {
 
     private static final String WINDOW_TITLE = "Bricker";
 
+    //background
+    private static final String BACKGROUND_IMAGE_PATH = "assets/DARK_BG2_small.jpeg";
+
     //ball
     private static final String BALL_IMAGE_PATH = "assets/ball.png";
     private static final String BALL_COLLISION_SOUND_PATH = "assets/blop.wav";
@@ -53,6 +56,7 @@ public class BrickerGameManager extends GameManager {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         this.windowController = windowController;
         windowController.setTargetFramerate(80);
+        initializeBackground(imageReader);
         initializeBall(imageReader, soundReader);
         initializePaddle(inputListener, imageReader);
         initializeBricks(imageReader);
@@ -63,6 +67,12 @@ public class BrickerGameManager extends GameManager {
         new BrickerGameManager(WINDOW_TITLE, WINDOW_DIMENSIONS).run();
     }
 
+    private void initializeBackground(ImageReader imageReader){
+        Renderable backgroundImage = imageReader.readImage(BACKGROUND_IMAGE_PATH,
+                false);
+        this.gameObjects().addGameObject(new GameObject(Vector2.ZERO, WINDOW_DIMENSIONS,
+                backgroundImage));
+    }
     private void initializeBall(ImageReader imageReader, SoundReader soundReader){
         Renderable ballImage =  imageReader.readImage(BALL_IMAGE_PATH, true);
         Sound collisionSound = soundReader.readSound(BALL_COLLISION_SOUND_PATH);
@@ -85,14 +95,14 @@ public class BrickerGameManager extends GameManager {
         Renderable brickImage = imageReader.readImage(BRICK_IMAGE_PATH, false);
         CollisionStrategy collisionStrategy = new CollisionStrategy(this.gameObjects());
         Vector2 brickPosition = BRICKS_INITIAL_POSITION;
-        for (int i = 0; i < BRICK_ROWS_AMOUNT; i++) {
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < BRICK_IN_ROW_AMOUNT; j++) {
                 Brick brick = new Brick(brickPosition, BRICK_DIMENSIONS, brickImage, collisionStrategy,
                         new Counter(56));
                 this.gameObjects().addGameObject(brick);
                 brickPosition = brickPosition.add(DISTANCE_BETWEEN_BRICKS);
             }
-            brickPosition = new Vector2(BRICKS_INITIAL_POSITION.multY(3));
+            brickPosition = BRICKS_INITIAL_POSITION.add(new Vector2(0, 30));
         }
     }
 
