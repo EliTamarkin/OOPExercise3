@@ -41,10 +41,14 @@ public class BrickerGameManager extends GameManager {
     //graph life counter
     private static final String HEART_IMAGE_PATH = "assets/heart.png";
     private static final Vector2 HEART_DIMENSIONS =  new Vector2(25, 25);
-    private static final int NUM_OF_LIVES = 3;
+
 
     private Ball ball;
     private WindowController windowController;
+    private Counter numOfBricks;
+    private static final int NUM_OF_LIVES = 3;
+    private Counter numOfLives;
+
 
     public BrickerGameManager(String windowTitle, Vector2 windowDimensions){
         super(windowTitle, windowDimensions);
@@ -92,24 +96,28 @@ public class BrickerGameManager extends GameManager {
     }
 
     private void initializeBricks(ImageReader imageReader){
+        numOfBricks = new Counter(0);
         Renderable brickImage = imageReader.readImage(BRICK_IMAGE_PATH, false);
         CollisionStrategy collisionStrategy = new CollisionStrategy(this.gameObjects());
         Vector2 brickPosition = BRICKS_INITIAL_POSITION;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < BRICK_ROWS_AMOUNT; i++) {
             for (int j = 0; j < BRICK_IN_ROW_AMOUNT; j++) {
                 Brick brick = new Brick(brickPosition, BRICK_DIMENSIONS, brickImage, collisionStrategy,
                         new Counter(56));
                 this.gameObjects().addGameObject(brick);
+                numOfBricks.increment();
                 brickPosition = brickPosition.add(DISTANCE_BETWEEN_BRICKS);
             }
-            brickPosition = BRICKS_INITIAL_POSITION.add(new Vector2(0, 30));
+            brickPosition = BRICKS_INITIAL_POSITION.add(new Vector2(0, 30).mult(i + 1));
         }
     }
 
     private void initializeGraphLifeCounter(ImageReader imageReader){
+        numOfLives = new Counter(NUM_OF_LIVES);
         Renderable heartImage = imageReader.readImage(HEART_IMAGE_PATH, true);
         GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(Vector2.ZERO, HEART_DIMENSIONS,
-                new Counter(NUM_OF_LIVES), heartImage, this.gameObjects(), NUM_OF_LIVES);
+                numOfLives, heartImage, this.gameObjects(), NUM_OF_LIVES);
+        gameObjects().addGameObject(graphicLifeCounter);
     }
 
 

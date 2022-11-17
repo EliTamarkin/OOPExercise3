@@ -9,10 +9,11 @@ import danogl.util.Vector2;
 import java.util.ArrayList;
 
 public class GraphicLifeCounter extends GameObject {
-    private final ArrayList<GameObject> hearts;
-    private Counter livesCounter;
-    private Renderable widgetRenderable;
-    private GameObjectCollection gameObjectCollection;
+
+    private static final Vector2 HEART_SHIFT = new Vector2(30, 0);
+    private final GameObject[] hearts;
+    private final Counter livesCounter;
+    private final GameObjectCollection gameObjectCollection;
     private int numOfLives;
 
     /**
@@ -29,24 +30,24 @@ public class GraphicLifeCounter extends GameObject {
                               GameObjectCollection gameObjectCollection, int numOfLives) {
         super(widgetTopLeftCorner, widgetDimensions, widgetRenderable);
         this.livesCounter = livesCounter;
-        this.widgetRenderable = widgetRenderable;
         this.gameObjectCollection = gameObjectCollection;
         this.numOfLives = numOfLives;
-        this.hearts = new ArrayList<>(numOfLives);
+        this.hearts = new GameObject[numOfLives];
         Vector2 heartPosition = widgetTopLeftCorner;
         for(int i = 0; i < numOfLives; i++){
             GameObject heart = new GameObject(heartPosition, widgetDimensions, widgetRenderable);
-            hearts.add(heart);
-            gameObjectCollection.addGameObject(heart);;
-            heartPosition = heartPosition.add(new Vector2(30, 0));
+            gameObjectCollection.addGameObject(heart);
+            this.hearts[i] = heart;
+            heartPosition = heartPosition.add(HEART_SHIFT);
         }
     }
-
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-
-
+        if(numOfLives < livesCounter.value()){
+            numOfLives--;
+            gameObjectCollection.removeGameObject(hearts[numOfLives]);
+        }
     }
 }
