@@ -1,26 +1,33 @@
-import brick_strategies.CollisionStrategy;
+package src;
+
+import src.brick_strategies.CollisionStrategy;
 import danogl.GameManager;
 import danogl.GameObject;
 import danogl.gui.*;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
-import gameobjects.Ball;
-import gameobjects.Brick;
-import gameobjects.GraphicLifeCounter;
-import gameobjects.Paddle;
+import src.gameobjects.*;
 
 public class BrickerGameManager extends GameManager {
 
     private static final String WINDOW_TITLE = "Bricker";
+    private static final Vector2 WINDOW_DIMENSIONS = new Vector2(700, 500);
 
     //background
     private static final String BACKGROUND_IMAGE_PATH = "assets/DARK_BG2_small.jpeg";
 
+    //walls
+    private static final int WALL_OFFSET = 30;
+    private static final int WALL_DIM = 1;
+    private static final Vector2 TOP_LEFT_OFFSET_CORNER = new Vector2(0, WALL_OFFSET);
+    private static final Vector2 TOP_RIGHT_OFFSET_RIGHT = new Vector2(WINDOW_DIMENSIONS.x(),
+            WALL_OFFSET);
+
     //ball
     private static final String BALL_IMAGE_PATH = "assets/ball.png";
     private static final String BALL_COLLISION_SOUND_PATH = "assets/blop.wav";
-    private static final Vector2 WINDOW_DIMENSIONS = new Vector2(700, 500);
+
     private static final Vector2 BALL_DIMENSIONS = new Vector2(50, 50);
     private static final int BALL_SPEED = 300;
 
@@ -31,8 +38,9 @@ public class BrickerGameManager extends GameManager {
 
     //brick
     private static final String BRICK_IMAGE_PATH = "assets/brick.png";
-    private static final Vector2 BRICK_DIMENSIONS =  new Vector2(100, 20);
-    private static final Vector2 BRICKS_INITIAL_POSITION =  new Vector2(0, 30);
+    private static final Vector2 BRICK_DIMENSIONS =  new Vector2(90, 20);
+    private static final Vector2 BRICKS_INITIAL_POSITION =
+            new Vector2(0, 30).add(new Vector2(5,0 ));
 
     private static final Vector2 DISTANCE_BETWEEN_BRICKS =  new Vector2(100, 0);
     private static final int BRICK_ROWS_AMOUNT = 8;
@@ -42,12 +50,16 @@ public class BrickerGameManager extends GameManager {
     private static final String HEART_IMAGE_PATH = "assets/heart.png";
     private static final Vector2 HEART_DIMENSIONS =  new Vector2(25, 25);
 
+    //numeric life counter
+    private static final Vector2 LIVES_COUNTER_DIMENSIONS = HEART_DIMENSIONS;
+    private static final Vector2 NUMERIC_COUNTER_POSITION = new Vector2(90, -5);
+
 
     private Ball ball;
     private WindowController windowController;
     private Counter numOfBricks;
     private static final int NUM_OF_LIVES = 3;
-    private Counter numOfLives;
+    private Counter numOfLives = new Counter(NUM_OF_LIVES);
 
 
     public BrickerGameManager(String windowTitle, Vector2 windowDimensions){
@@ -61,10 +73,12 @@ public class BrickerGameManager extends GameManager {
         this.windowController = windowController;
         windowController.setTargetFramerate(80);
         initializeBackground(imageReader);
+        initializeWalls();
         initializeBall(imageReader, soundReader);
         initializePaddle(inputListener, imageReader);
         initializeBricks(imageReader);
         initializeGraphLifeCounter(imageReader);
+        initializeNumericLifeCounter();
     }
 
     public static void main(String[] args) {
@@ -77,6 +91,19 @@ public class BrickerGameManager extends GameManager {
         this.gameObjects().addGameObject(new GameObject(Vector2.ZERO, WINDOW_DIMENSIONS,
                 backgroundImage));
     }
+
+    private void initializeWalls(){
+        //top wall
+        this.gameObjects().addGameObject(new GameObject(TOP_LEFT_OFFSET_CORNER,
+                new Vector2(WINDOW_DIMENSIONS.x(), WALL_DIM), null));
+        //left wall
+        this.gameObjects().addGameObject(new GameObject(TOP_LEFT_OFFSET_CORNER,
+                new Vector2(WALL_DIM, WINDOW_DIMENSIONS.y()), null));
+        //right wall
+        this.gameObjects().addGameObject(new GameObject(TOP_RIGHT_OFFSET_RIGHT,
+                new Vector2(WALL_DIM, WINDOW_DIMENSIONS.y()), null));
+    }
+
     private void initializeBall(ImageReader imageReader, SoundReader soundReader){
         Renderable ballImage =  imageReader.readImage(BALL_IMAGE_PATH, true);
         Sound collisionSound = soundReader.readSound(BALL_COLLISION_SOUND_PATH);
@@ -113,11 +140,16 @@ public class BrickerGameManager extends GameManager {
     }
 
     private void initializeGraphLifeCounter(ImageReader imageReader){
-        numOfLives = new Counter(NUM_OF_LIVES);
         Renderable heartImage = imageReader.readImage(HEART_IMAGE_PATH, true);
         GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(Vector2.ZERO, HEART_DIMENSIONS,
                 numOfLives, heartImage, this.gameObjects(), NUM_OF_LIVES);
         gameObjects().addGameObject(graphicLifeCounter);
+    }
+
+    private void initializeNumericLifeCounter(){
+        NumericLifeCounter numericLifeCounter = new NumericLifeCounter(numOfLives,
+                NUMERIC_COUNTER_POSITION, LIVES_COUNTER_DIMENSIONS, this.gameObjects());
+        gameObjects().addGameObject(numericLifeCounter);
     }
 
 

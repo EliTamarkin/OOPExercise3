@@ -1,15 +1,12 @@
-package gameobjects;
-
-import brick_strategies.CollisionStrategy;
+package src.gameobjects;
 import danogl.GameObject;
 import danogl.collisions.Collision;
+import danogl.gui.Sound;
 import danogl.gui.rendering.Renderable;
-import danogl.util.Counter;
 import danogl.util.Vector2;
 
-public class Brick extends GameObject {
-    private CollisionStrategy collisionStrategy;
-    private Counter counter;
+public class Ball extends GameObject {
+    private final Sound collisionSound;
 
     /**
      * Construct a new GameObject instance.
@@ -20,16 +17,15 @@ public class Brick extends GameObject {
      * @param renderable    The renderable representing the object. Can be null, in which case
      *                      the GameObject will not be rendered.
      */
-    public Brick(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable,
-                 CollisionStrategy collisionStrategy, Counter counter) {
+    public Ball(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, Sound sound) {
         super(topLeftCorner, dimensions, renderable);
-        this.collisionStrategy = collisionStrategy;
-        this.counter = counter;
+        this.collisionSound = sound;
     }
 
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
-
+        setVelocity(getVelocity().flipped(collision.getNormal()));
+        collisionSound.play();
     }
 }

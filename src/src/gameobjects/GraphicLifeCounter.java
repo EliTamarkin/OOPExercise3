@@ -1,12 +1,10 @@
-package gameobjects;
+package src.gameobjects;
 
 import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
-
-import java.util.ArrayList;
 
 public class GraphicLifeCounter extends GameObject {
 
