@@ -2,6 +2,7 @@ package src.gameobjects;
 
 import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
+import danogl.collisions.Layer;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
@@ -34,7 +35,7 @@ public class GraphicLifeCounter extends GameObject {
         Vector2 heartPosition = widgetTopLeftCorner;
         for(int i = 0; i < numOfLives; i++){
             GameObject heart = new GameObject(heartPosition, widgetDimensions, widgetRenderable);
-            gameObjectCollection.addGameObject(heart);
+            gameObjectCollection.addGameObject(heart, Layer.BACKGROUND);
             this.hearts[i] = heart;
             heartPosition = heartPosition.add(HEART_SHIFT);
         }

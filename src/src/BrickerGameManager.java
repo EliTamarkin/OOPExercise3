@@ -1,5 +1,6 @@
 package src;
 
+import danogl.collisions.Layer;
 import src.brick_strategies.CollisionStrategy;
 import danogl.GameManager;
 import danogl.GameObject;
@@ -34,31 +35,33 @@ public class BrickerGameManager extends GameManager {
     //paddle
     private static final String PADDLE_IMAGE_PATH = "assets/paddle.png";
     private static final Vector2 PADDLE_DIMENSIONS =  new Vector2(200, 20);
-    private static final int PADDLE_MIN_DIST_FROM_EDGE = 0;
+    private static final int PADDLE_MIN_DIST_FROM_EDGE = 30;
 
     //brick
     private static final String BRICK_IMAGE_PATH = "assets/brick.png";
     private static final Vector2 BRICK_DIMENSIONS =  new Vector2(90, 20);
-    private static final Vector2 BRICKS_INITIAL_POSITION =
-            new Vector2(0, 30).add(new Vector2(5,0 ));
-
+    private static final Vector2 BRICKS_INITIAL_POSITION = new Vector2(5,5 );
     private static final Vector2 DISTANCE_BETWEEN_BRICKS =  new Vector2(100, 0);
     private static final int BRICK_ROWS_AMOUNT = 8;
     private static final int BRICK_IN_ROW_AMOUNT = 7;
 
     //graph life counter
     private static final String HEART_IMAGE_PATH = "assets/heart.png";
+    private static final int NUM_OF_LIVES = 3;
     private static final Vector2 HEART_DIMENSIONS =  new Vector2(25, 25);
+    private static final Vector2 HEARTS_INITIAL_POSITION =
+            new Vector2(0, WINDOW_DIMENSIONS.y() - 25);
 
     //numeric life counter
     private static final Vector2 LIVES_COUNTER_DIMENSIONS = HEART_DIMENSIONS;
-    private static final Vector2 NUMERIC_COUNTER_POSITION = new Vector2(90, -5);
+    private static final Vector2 NUMERIC_COUNTER_POSITION =
+            new Vector2(HEART_DIMENSIONS.x() * NUM_OF_LIVES + 15, WINDOW_DIMENSIONS.y() - 30);
 
 
     private Ball ball;
     private WindowController windowController;
     private Counter numOfBricks;
-    private static final int NUM_OF_LIVES = 3;
+
     private Counter numOfLives = new Counter(NUM_OF_LIVES);
 
 
@@ -89,7 +92,7 @@ public class BrickerGameManager extends GameManager {
         Renderable backgroundImage = imageReader.readImage(BACKGROUND_IMAGE_PATH,
                 false);
         this.gameObjects().addGameObject(new GameObject(Vector2.ZERO, WINDOW_DIMENSIONS,
-                backgroundImage));
+                backgroundImage), Layer.BACKGROUND);
     }
 
     private void initializeWalls(){
@@ -141,15 +144,15 @@ public class BrickerGameManager extends GameManager {
 
     private void initializeGraphLifeCounter(ImageReader imageReader){
         Renderable heartImage = imageReader.readImage(HEART_IMAGE_PATH, true);
-        GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(Vector2.ZERO, HEART_DIMENSIONS,
-                numOfLives, heartImage, this.gameObjects(), NUM_OF_LIVES);
-        gameObjects().addGameObject(graphicLifeCounter);
+        GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(HEARTS_INITIAL_POSITION,
+                HEART_DIMENSIONS, numOfLives, heartImage, this.gameObjects(), NUM_OF_LIVES);
+        gameObjects().addGameObject(graphicLifeCounter, Layer.BACKGROUND);
     }
 
     private void initializeNumericLifeCounter(){
         NumericLifeCounter numericLifeCounter = new NumericLifeCounter(numOfLives,
                 NUMERIC_COUNTER_POSITION, LIVES_COUNTER_DIMENSIONS, this.gameObjects());
-        gameObjects().addGameObject(numericLifeCounter);
+        gameObjects().addGameObject(numericLifeCounter, Layer.BACKGROUND);
     }
 
 

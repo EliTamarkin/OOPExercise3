@@ -42,5 +42,13 @@ public class Paddle extends GameObject {
             movementDir = movementDir.add(Vector2.RIGHT);
         }
         setVelocity(movementDir.mult(MOVEMENT_SPEED));
+
+        float maxXPosition = windowDimensions.x() - minDistFromEdge - getDimensions().x();
+        if (getTopLeftCorner().x() < minDistFromEdge){
+            transform().setTopLeftCornerX(minDistFromEdge);
+        }
+        else if (getTopLeftCorner().x() > maxXPosition){
+            transform().setTopLeftCornerX(maxXPosition);
+        }
     }
 }

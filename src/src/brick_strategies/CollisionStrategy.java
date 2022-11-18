@@ -13,6 +13,8 @@ public class CollisionStrategy {
     }
 
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter){
+        this.gameObjects.removeGameObject(collidedObj);
+        bricksCounter.decrement();
 
     }
 }
