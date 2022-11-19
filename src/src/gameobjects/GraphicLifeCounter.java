@@ -16,13 +16,17 @@ public class GraphicLifeCounter extends GameObject {
     private int numOfLives;
 
     /**
-     * Construct a new GameObject instance.
+     * Constructs a new GraphicLifeCounter instance.
      *
      * @param widgetTopLeftCorner Position of the object, in window coordinates (pixels).
      *                      Note that (0,0) is the top-left corner of the window.
      * @param widgetDimensions    Width and height in window coordinates.
      * @param widgetRenderable    The renderable representing the object. Can be null, in which case
      *                      the GameObject will not be rendered.
+     * @param gameObjectCollection the collection of the objects in the game to be used for adding or
+     *                             removing objects
+     * @param numOfLives           initial number of lives to be added to the game
+     * @param livesCounter         lives counter representing the updated number of lives
      */
     public GraphicLifeCounter(Vector2 widgetTopLeftCorner, Vector2 widgetDimensions,
                               Counter livesCounter, Renderable widgetRenderable,
@@ -41,12 +45,21 @@ public class GraphicLifeCounter extends GameObject {
         }
     }
 
+    /**
+     * updates the number of lives displayed according to the value of the counter
+     * @param deltaTime The time elapsed, in seconds, since the last frame. Can
+     *                  be used to determine a new position/velocity by multiplying
+     *                  this delta with the velocity/acceleration respectively
+     *                  and adding to the position/velocity:
+     *                  velocity += deltaTime*acceleration
+     *                  pos += deltaTime*velocity
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        if(numOfLives < livesCounter.value()){
+        if(livesCounter.value() < numOfLives){
             numOfLives--;
-            gameObjectCollection.removeGameObject(hearts[numOfLives]);
+            gameObjectCollection.removeGameObject(hearts[numOfLives], Layer.BACKGROUND);
         }
     }
 }

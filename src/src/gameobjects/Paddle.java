@@ -10,18 +10,21 @@ import java.awt.event.KeyEvent;
 public class Paddle extends GameObject {
 
     private static final float MOVEMENT_SPEED = 300;
-    private UserInputListener inputListener;
-    private Vector2 windowDimensions;
-    private int minDistFromEdge;
+    private final UserInputListener inputListener;
+    private final Vector2 windowDimensions;
+    private final int minDistFromEdge;
 
     /**
-     * Construct a new GameObject instance.
+     * Constructs a new Paddle instance.
      *
      * @param topLeftCorner Position of the object, in window coordinates (pixels).
      *                      Note that (0,0) is the top-left corner of the window.
      * @param dimensions    Width and height in window coordinates.
      * @param renderable    The renderable representing the object. Can be null, in which case
      *                      the GameObject will not be rendered.
+     * @param inputListener input listener to listen to the users key requests
+     * @param windowDimensions window dimensions of the game
+     * @param minDistFromEdge minimal distance allowed to be from the games left and right borders
      */
     public Paddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable,
                   UserInputListener inputListener, Vector2 windowDimensions, int minDistFromEdge) {
@@ -31,6 +34,16 @@ public class Paddle extends GameObject {
         this.minDistFromEdge = minDistFromEdge;
     }
 
+    /**
+     * updates the paddle's position according to the key pressed taking in account the minimal distance
+     * from the edge that was set
+     * @param deltaTime The time elapsed, in seconds, since the last frame. Can
+     *                  be used to determine a new position/velocity by multiplying
+     *                  this delta with the velocity/acceleration respectively
+     *                  and adding to the position/velocity:
+     *                  velocity += deltaTime*acceleration
+     *                  pos += deltaTime*velocity
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
