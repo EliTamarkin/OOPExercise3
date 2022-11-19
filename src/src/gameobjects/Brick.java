@@ -7,6 +7,11 @@ import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
 
+
+/**
+ * The following class represents the brick of the bricker game.
+ * @author Eliyahu Tamarkin
+ */
 public class Brick extends GameObject {
     private final CollisionStrategy collisionStrategy;
     private final Counter counter;

@@ -4,6 +4,10 @@ import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
 import danogl.util.Counter;
 
+/**
+ * The following class represents the collision strategy acted upon collision between objects.
+ * @author Eliyahu Tamarkin
+ */
 public class CollisionStrategy {
     private final GameObjectCollection gameObjects;
 

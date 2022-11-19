@@ -7,6 +7,11 @@ import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
 
+/**
+ * The following class represents the graphical life counter for the amount of tries remaining in the
+ * bricker game.
+ * @author Eliyahu Tamarkin
+ */
 public class GraphicLifeCounter extends GameObject {
 
     private static final Vector2 HEART_SHIFT = new Vector2(30, 0);

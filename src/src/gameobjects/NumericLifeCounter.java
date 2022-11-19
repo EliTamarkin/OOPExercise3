@@ -8,6 +8,11 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
+/**
+ * The following class represents the numerical life counter for the amount of tries remaining in the
+ * bricker game.
+ * @author Eliyahu Tamarkin
+ */
 public class NumericLifeCounter extends GameObject {
 
     private static final int MEDIUM_HEARTS = 2;

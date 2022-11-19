@@ -7,6 +7,10 @@ import danogl.util.Vector2;
 
 import java.awt.event.KeyEvent;
 
+/**
+ * The following class represents the paddle of the bricker game.
+ * @author Eliyahu Tamarkin
+ */
 public class Paddle extends GameObject {
 
     private static final float MOVEMENT_SPEED = 300;

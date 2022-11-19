@@ -5,6 +5,10 @@ import danogl.gui.Sound;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 
+/**
+ * The following class represents the ball of the bricker game.
+ * @author Eliyahu Tamarkin
+ */
 public class Ball extends GameObject {
     private final Sound collisionSound;
 

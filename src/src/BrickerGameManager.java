@@ -12,6 +12,10 @@ import src.gameobjects.*;
 
 import java.awt.event.KeyEvent;
 
+/**
+ * The following class represents the manager of the bricker game.
+ * @author Eliyahu Tamarkin
+ */
 public class BrickerGameManager extends GameManager {
 
     private static final String WINDOW_TITLE = "Bricker";
