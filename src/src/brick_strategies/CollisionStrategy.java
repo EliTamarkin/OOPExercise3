@@ -2,6 +2,7 @@ package src.brick_strategies;
 
 import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
+import danogl.collisions.Layer;
 import danogl.util.Counter;
 
 /**
@@ -27,7 +28,7 @@ public class CollisionStrategy {
      * @param bricksCounter bricks counter of the game
      */
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter){
-        this.gameObjects.removeGameObject(collidedObj);
+        this.gameObjects.removeGameObject(collidedObj, Layer.STATIC_OBJECTS);
         bricksCounter.decrement();
     }
 }

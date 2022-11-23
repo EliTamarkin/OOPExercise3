@@ -34,8 +34,7 @@ public class BrickerGameManager extends GameManager {
     //ball
     private static final String BALL_IMAGE_PATH = "assets/ball.png";
     private static final String BALL_COLLISION_SOUND_PATH = "assets/blop.wav";
-
-    private static final Vector2 BALL_DIMENSIONS = new Vector2(50, 50);
+    private static final Vector2 BALL_DIMENSIONS = new Vector2(30, 30);
     private static final int BALL_SPEED = 300;
 
     //paddle
@@ -62,6 +61,12 @@ public class BrickerGameManager extends GameManager {
     private static final Vector2 LIVES_COUNTER_DIMENSIONS = HEART_DIMENSIONS;
     private static final Vector2 NUMERIC_COUNTER_POSITION =
             new Vector2(HEART_DIMENSIONS.x() * NUM_OF_LIVES + 15, WINDOW_DIMENSIONS.y() - 30);
+
+    //messages
+    private static final String WIN_MESSAGE ="You Won! ";
+    private static final String LOSE_MESSAGE ="You Lost! ";
+    private static final String PLAY_AGAIN_MESSAGE ="Play again?";
+
 
 
     private Ball ball;
@@ -143,14 +148,16 @@ public class BrickerGameManager extends GameManager {
     private void checkForGameEnd() {
         String prompt = "";
         if (checkForWin()){
-            prompt = "You Won! ";
+            prompt = WIN_MESSAGE;
         }
         if (checkForLose()){
-            prompt = "You Lost! ";
+            prompt = LOSE_MESSAGE;
         }
         if (!prompt.isEmpty()){
-            prompt += "Play again?";
+            prompt += PLAY_AGAIN_MESSAGE;
             if (windowController.openYesNoDialog(prompt)){
+                numOfLives.reset();
+                numOfLives.increaseBy(NUM_OF_LIVES);
                 windowController.resetGame();
             }
             else {
@@ -247,7 +254,7 @@ public class BrickerGameManager extends GameManager {
             for (int j = 0; j < BRICK_IN_ROW_AMOUNT; j++) {
                 Brick brick = new Brick(brickPosition, BRICK_DIMENSIONS, brickImage, collisionStrategy,
                         numOfBricks);
-                this.gameObjects().addGameObject(brick);
+                this.gameObjects().addGameObject(brick, Layer.STATIC_OBJECTS);
                 numOfBricks.increment();
                 brickPosition = brickPosition.add(DISTANCE_BETWEEN_BRICKS);
             }
@@ -263,7 +270,7 @@ public class BrickerGameManager extends GameManager {
         Renderable heartImage = imageReader.readImage(HEART_IMAGE_PATH, true);
         GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(HEARTS_INITIAL_POSITION,
                 HEART_DIMENSIONS, numOfLives, heartImage, this.gameObjects(), NUM_OF_LIVES);
-        gameObjects().addGameObject(graphicLifeCounter, Layer.BACKGROUND);
+        gameObjects().addGameObject(graphicLifeCounter, Layer.UI);
     }
 
     /**
@@ -272,7 +279,7 @@ public class BrickerGameManager extends GameManager {
     private void initializeNumericLifeCounter(){
         NumericLifeCounter numericLifeCounter = new NumericLifeCounter(numOfLives,
                 NUMERIC_COUNTER_POSITION, LIVES_COUNTER_DIMENSIONS, this.gameObjects());
-        gameObjects().addGameObject(numericLifeCounter, Layer.BACKGROUND);
+        gameObjects().addGameObject(numericLifeCounter, Layer.UI);
     }
 
 
