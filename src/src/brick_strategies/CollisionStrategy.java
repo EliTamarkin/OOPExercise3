@@ -10,14 +10,13 @@ import danogl.util.Counter;
  * @author Eliyahu Tamarkin
  */
 public class CollisionStrategy {
-    private final GameObjectCollection gameObjects;
+    protected final GameObjectCollection gameObjects;
 
     /**
      * Constructs a new CollisionStrategy instance.
      * @param gameObjects   the games objects used for adding or removing objects from the game
      */
     public CollisionStrategy(GameObjectCollection gameObjects){
-
         this.gameObjects = gameObjects;
     }
 

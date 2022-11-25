@@ -12,6 +12,8 @@ import danogl.util.Vector2;
 public class Ball extends GameObject {
     private final Sound collisionSound;
 
+    private int collisionNum;
+
     /**
      * Constructs a new Ball instance.
      *
@@ -25,6 +27,7 @@ public class Ball extends GameObject {
     public Ball(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable, Sound sound) {
         super(topLeftCorner, dimensions, renderable);
         this.collisionSound = sound;
+        this.collisionNum = 0;
     }
 
     /**
@@ -37,7 +40,11 @@ public class Ball extends GameObject {
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
+        collisionNum++;
         setVelocity(getVelocity().flipped(collision.getNormal()));
         collisionSound.play();
+
     }
+
+    public int getCollisionNum(){ return this.collisionNum; }
 }

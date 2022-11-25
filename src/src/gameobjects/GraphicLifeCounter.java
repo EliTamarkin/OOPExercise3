@@ -3,6 +3,7 @@ package src.gameobjects;
 import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
 import danogl.collisions.Layer;
+import danogl.gui.WindowController;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
@@ -15,9 +16,13 @@ import danogl.util.Vector2;
 public class GraphicLifeCounter extends GameObject {
 
     private static final Vector2 HEART_SHIFT = new Vector2(30, 0);
-    private final GameObject[] hearts;
+    private static final int MAX_HEARTS_AMOUNT = 4;
+    private final Heart[] hearts;
     private final Counter livesCounter;
     private final GameObjectCollection gameObjectCollection;
+    private final Vector2 widgetDimensions;
+    private final Renderable widgetRenderable;
+    private final WindowController windowController;
     private int numOfLives;
 
     /**
@@ -35,15 +40,20 @@ public class GraphicLifeCounter extends GameObject {
      */
     public GraphicLifeCounter(Vector2 widgetTopLeftCorner, Vector2 widgetDimensions,
                               Counter livesCounter, Renderable widgetRenderable,
-                              GameObjectCollection gameObjectCollection, int numOfLives) {
+                              GameObjectCollection gameObjectCollection, int numOfLives,
+                              WindowController windowController) {
         super(widgetTopLeftCorner, widgetDimensions, widgetRenderable);
         this.livesCounter = livesCounter;
+        this.windowController = windowController;
         this.gameObjectCollection = gameObjectCollection;
+        this.widgetDimensions = widgetDimensions;
+        this.widgetRenderable = widgetRenderable;
         this.numOfLives = numOfLives;
-        this.hearts = new GameObject[numOfLives];
+        this.hearts = new Heart[MAX_HEARTS_AMOUNT];
         Vector2 heartPosition = widgetTopLeftCorner;
         for(int i = 0; i < numOfLives; i++){
-            GameObject heart = new GameObject(heartPosition, widgetDimensions, widgetRenderable);
+            Heart heart = new Heart(heartPosition, widgetDimensions, widgetRenderable,
+                    windowController, gameObjectCollection, livesCounter);
             gameObjectCollection.addGameObject(heart, Layer.UI);
             this.hearts[i] = heart;
             heartPosition = heartPosition.add(HEART_SHIFT);
@@ -63,8 +73,24 @@ public class GraphicLifeCounter extends GameObject {
     public void update(float deltaTime) {
         super.update(deltaTime);
         if(livesCounter.value() < numOfLives){
-            numOfLives--;
-            gameObjectCollection.removeGameObject(hearts[numOfLives], Layer.UI);
+            removeHeart();
         }
+        else if(livesCounter.value() > numOfLives && numOfLives < MAX_HEARTS_AMOUNT){
+            addNewHeart();
+        }
+    }
+
+    private void removeHeart(){
+        numOfLives--;
+        gameObjectCollection.removeGameObject(hearts[numOfLives], Layer.UI);
+    }
+
+    private void addNewHeart(){
+        Vector2 heartPosition = hearts[numOfLives - 1].getTopLeftCorner().add(HEART_SHIFT);
+        Heart newHeart = new Heart(heartPosition, this.widgetDimensions, widgetRenderable,
+                windowController, gameObjectCollection, livesCounter);
+        gameObjectCollection.addGameObject(newHeart, Layer.UI);
+        hearts[numOfLives] = newHeart;
+        numOfLives++;
     }
 }

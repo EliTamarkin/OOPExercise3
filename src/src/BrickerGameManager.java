@@ -8,6 +8,7 @@ import danogl.gui.*;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
+import src.brick_strategies.CollisionStrategyFactory;
 import src.gameobjects.*;
 
 import java.awt.event.KeyEvent;
@@ -45,8 +46,8 @@ public class BrickerGameManager extends GameManager {
     //brick
     private static final String BRICK_IMAGE_PATH = "assets/brick.png";
     private static final Vector2 BRICK_DIMENSIONS =  new Vector2(90, 20);
-    private static final Vector2 BRICKS_INITIAL_POSITION = new Vector2(5,5 );
-    private static final Vector2 DISTANCE_BETWEEN_BRICKS =  new Vector2(100, 0);
+    private static final Vector2 BRICKS_INITIAL_POSITION = new Vector2(20,5 );
+    private static final Vector2 DISTANCE_BETWEEN_BRICKS =  new Vector2(95, 0);
     private static final int BRICK_ROWS_AMOUNT = 8;
     private static final int BRICK_IN_ROW_AMOUNT = 7;
 
@@ -59,8 +60,7 @@ public class BrickerGameManager extends GameManager {
 
     //numeric life counter
     private static final Vector2 LIVES_COUNTER_DIMENSIONS = HEART_DIMENSIONS;
-    private static final Vector2 NUMERIC_COUNTER_POSITION =
-            new Vector2(HEART_DIMENSIONS.x() * NUM_OF_LIVES + 15, WINDOW_DIMENSIONS.y() - 30);
+
 
     //messages
     private static final String WIN_MESSAGE ="You Won! ";
@@ -70,6 +70,8 @@ public class BrickerGameManager extends GameManager {
 
 
     private Ball ball;
+
+    private Paddle userPaddle;
     private WindowController windowController;
     private Counter numOfBricks;
 
@@ -109,7 +111,7 @@ public class BrickerGameManager extends GameManager {
         initializeWalls();
         initializeBall(imageReader, soundReader);
         initializePaddle(inputListener, imageReader);
-        initializeBricks(imageReader);
+        initializeBricks(imageReader, soundReader);
         initializeGraphLifeCounter(imageReader);
         initializeNumericLifeCounter();
     }
@@ -158,6 +160,8 @@ public class BrickerGameManager extends GameManager {
             if (windowController.openYesNoDialog(prompt)){
                 numOfLives.reset();
                 numOfLives.increaseBy(NUM_OF_LIVES);
+//                numOfBricks.reset();
+//                numOfBricks.increaseBy(56);
                 windowController.resetGame();
             }
             else {
@@ -234,7 +238,7 @@ public class BrickerGameManager extends GameManager {
      */
     private void initializePaddle(UserInputListener inputListener, ImageReader imageReader){
         Renderable paddleImage =  imageReader.readImage(PADDLE_IMAGE_PATH, false);
-        GameObject userPaddle = new Paddle(Vector2.ZERO, PADDLE_DIMENSIONS, paddleImage, inputListener,
+        this.userPaddle = new Paddle(Vector2.ZERO, PADDLE_DIMENSIONS, paddleImage, inputListener,
                 WINDOW_DIMENSIONS, PADDLE_MIN_DIST_FROM_EDGE);
         userPaddle.setCenter(new Vector2(WINDOW_DIMENSIONS.x() / 2,
                 (int) WINDOW_DIMENSIONS.y() - 30));
@@ -245,20 +249,24 @@ public class BrickerGameManager extends GameManager {
      * initializes the games bricks
      * @param imageReader reader to read the brick's image
      */
-    private void initializeBricks(ImageReader imageReader){
+    private void initializeBricks(ImageReader imageReader, SoundReader soundReader){
         numOfBricks = new Counter(0);
         Renderable brickImage = imageReader.readImage(BRICK_IMAGE_PATH, false);
-        CollisionStrategy collisionStrategy = new CollisionStrategy(this.gameObjects());
+        CollisionStrategyFactory collisionStrategyFactory = new CollisionStrategyFactory(gameObjects(),
+                imageReader, soundReader, userInputListener, this, windowController,
+                WINDOW_DIMENSIONS, userPaddle, ball, numOfLives, HEART_DIMENSIONS);
         Vector2 brickPosition = BRICKS_INITIAL_POSITION;
         for (int i = 0; i < BRICK_ROWS_AMOUNT; i++) {
             for (int j = 0; j < BRICK_IN_ROW_AMOUNT; j++) {
-                Brick brick = new Brick(brickPosition, BRICK_DIMENSIONS, brickImage, collisionStrategy,
+                int strategyNumber = collisionStrategyFactory.getStrategy();
+                CollisionStrategy strategy = collisionStrategyFactory.buildStrategy(strategyNumber);
+                Brick brick = new Brick(brickPosition, BRICK_DIMENSIONS, brickImage, strategy,
                         numOfBricks);
                 this.gameObjects().addGameObject(brick, Layer.STATIC_OBJECTS);
-                numOfBricks.increment();
                 brickPosition = brickPosition.add(DISTANCE_BETWEEN_BRICKS);
+                numOfBricks.increment();
             }
-            brickPosition = BRICKS_INITIAL_POSITION.add(new Vector2(0, 30).mult(i + 1));
+            brickPosition = BRICKS_INITIAL_POSITION.add(new Vector2(0, 20).mult(i + 1));
         }
     }
 
@@ -269,7 +277,8 @@ public class BrickerGameManager extends GameManager {
     private void initializeGraphLifeCounter(ImageReader imageReader){
         Renderable heartImage = imageReader.readImage(HEART_IMAGE_PATH, true);
         GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(HEARTS_INITIAL_POSITION,
-                HEART_DIMENSIONS, numOfLives, heartImage, this.gameObjects(), NUM_OF_LIVES);
+                HEART_DIMENSIONS, numOfLives, heartImage, this.gameObjects(), NUM_OF_LIVES,
+                windowController);
         gameObjects().addGameObject(graphicLifeCounter, Layer.UI);
     }
 
@@ -278,7 +287,7 @@ public class BrickerGameManager extends GameManager {
      */
     private void initializeNumericLifeCounter(){
         NumericLifeCounter numericLifeCounter = new NumericLifeCounter(numOfLives,
-                NUMERIC_COUNTER_POSITION, LIVES_COUNTER_DIMENSIONS, this.gameObjects());
+                Vector2.ZERO, LIVES_COUNTER_DIMENSIONS, windowController, HEART_DIMENSIONS);
         gameObjects().addGameObject(numericLifeCounter, Layer.UI);
     }
 
