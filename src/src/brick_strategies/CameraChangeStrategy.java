@@ -10,7 +10,10 @@ import danogl.util.Counter;
 import danogl.util.Vector2;
 import src.gameobjects.Ball;
 
-public class CameraChangeStrategy extends CollisionStrategy{
+public class CameraChangeStrategy implements CollisionStrategy {
+
+    private final CollisionStrategy decoratedStrategy;
+    private final GameObjectCollection gameObjects;
 
     private class CameraManager extends GameObject{
 
@@ -54,9 +57,11 @@ public class CameraChangeStrategy extends CollisionStrategy{
      *
      * @param gameObjects the games objects used for adding or removing objects from the game
      */
-    public CameraChangeStrategy(GameObjectCollection gameObjects, GameManager gameManager,
-                                WindowController windowController, Ball objectToFollow) {
-        super(gameObjects);
+    public CameraChangeStrategy(CollisionStrategy decoratedStrategy, GameObjectCollection gameObjects,
+                                GameManager gameManager, WindowController windowController,
+                                Ball objectToFollow) {
+        this.decoratedStrategy = decoratedStrategy;
+        this.gameObjects = gameObjects;
         this.gameManager = gameManager;
         this.windowController = windowController;
         this.objectToFollow = objectToFollow;
@@ -64,7 +69,7 @@ public class CameraChangeStrategy extends CollisionStrategy{
 
     @Override
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter) {
-        super.onCollision(collidedObj, colliderObj, bricksCounter);
+        decoratedStrategy.onCollision(collidedObj, colliderObj, bricksCounter);
         if (gameManager.getCamera() == null && colliderObj == objectToFollow){
             gameManager.setCamera(new Camera(objectToFollow, Vector2.ZERO,
                     windowController.getWindowDimensions().mult(FRAME_WIDEN_PARAMETER),

@@ -22,6 +22,7 @@ public class CollisionStrategyFactory {
     private static final int CAMERA_CHANGE = 3;
     private static final int HEART_CREATION = 4;
     private static final int DOUBLE = 5;
+    private static final int MAX_STRATEGIES = 3;
     private final GameObjectCollection gameObjects;
     private final ImageReader imageReader;
     private final SoundReader soundReader;
@@ -34,8 +35,8 @@ public class CollisionStrategyFactory {
     private final Counter livesCounter;
     private final Vector2 heartDimensions;
 
-
     private final Random rnd = new Random();
+    private final CollisionStrategy baseStrategy;
 
     public CollisionStrategyFactory(GameObjectCollection gameObjects, ImageReader imageReader,
                                     SoundReader soundReader, UserInputListener inputListener,
@@ -53,38 +54,52 @@ public class CollisionStrategyFactory {
         this.ball = ball;
         this.livesCounter = livesCounter;
         this.heartDimensions = heartDimensions;
+        this.baseStrategy = new RemoveBrickStrategy(gameObjects);
 
     }
 
-    public int getStrategy(){
-        return 4;
+    public CollisionStrategy getStrategy(){
+//        int strategyIndex = rnd.nextInt(NUM_OF_STRATEGIES);
+//        if (strategyIndex != DOUBLE){
+//            return buildStrategy(baseStrategy, strategyIndex);
+//        }
+//        return buildDoubleStrategy(baseStrategy, 0, 2);
+        return buildStrategy(baseStrategy,1);
     }
 
-    public CollisionStrategy buildStrategy(int strategyType){
-        CollisionStrategy strategy;
+    public CollisionStrategy buildStrategy(CollisionStrategy decoratedStrategy, int strategyType){
         switch(strategyType){
             case REGULAR:
-                strategy = new CollisionStrategy(gameObjects);
-                break;
+                return decoratedStrategy;
             case MULTIPLE_BALLS:
-                strategy = new PuckBallStrategy(gameObjects, imageReader, soundReader);
-                break;
+                return new PuckBallStrategy(decoratedStrategy, gameObjects, imageReader, soundReader);
             case ADDITIONAL_PADDLE:
-                strategy = new PaddleStrategy(gameObjects, imageReader, inputListener,
-                        paddle.getDimensions(), windowDimensions);
-                break;
+                return  new PaddleStrategy(decoratedStrategy, gameObjects, imageReader,
+                        inputListener, paddle.getDimensions(), windowDimensions);
             case CAMERA_CHANGE:
-                strategy = new CameraChangeStrategy(gameObjects, gameManager, windowController, ball);
-                break;
+                return new CameraChangeStrategy(decoratedStrategy, gameObjects, gameManager,
+                        windowController, ball);
             case HEART_CREATION:
-                strategy = new HeartCreationStrategy(gameObjects, heartDimensions, imageReader,
-                        windowController, livesCounter);
-                break;
+                return new HeartCreationStrategy(decoratedStrategy, gameObjects, heartDimensions,
+                        imageReader, windowController, livesCounter);
             default:
-                strategy = null;
+                return null;
         }
-        return strategy;
+    }
 
+    private CollisionStrategy buildDoubleStrategy(CollisionStrategy decoratedStrategy,
+                                                  int numOfStrategies, int maxStrategies){
+        if (numOfStrategies == maxStrategies){
+            return decoratedStrategy;
+        }
+        int strategyIndex = rnd.nextInt(NUM_OF_STRATEGIES - 1) + 1;
+        if (strategyIndex != DOUBLE){
+            numOfStrategies++;
+            return buildDoubleStrategy(buildStrategy(decoratedStrategy, strategyIndex), numOfStrategies,
+                    maxStrategies);
+        }
+        maxStrategies = Math.max(maxStrategies, MAX_STRATEGIES);
+        return buildDoubleStrategy(decoratedStrategy, numOfStrategies, maxStrategies);
     }
 
 }

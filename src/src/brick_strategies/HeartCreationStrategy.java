@@ -10,7 +10,7 @@ import danogl.util.Vector2;
 import src.gameobjects.Heart;
 
 
-public class HeartCreationStrategy extends CollisionStrategy {
+public class HeartCreationStrategy implements CollisionStrategy {
 
     private static final String HEART_IMAGE_PATH = "assets/heart.png";
 
@@ -23,16 +23,20 @@ public class HeartCreationStrategy extends CollisionStrategy {
     private final ImageRenderable heartImage;
 
     private final Counter livesCounter;
+    private final CollisionStrategy decoratedStrategy;
+    private final GameObjectCollection gameObjects;
 
     /**
      * Constructs a new CollisionStrategy instance.
      *
      * @param gameObjects the games objects used for adding or removing objects from the game
      */
-    public HeartCreationStrategy(GameObjectCollection gameObjects, Vector2 heartDimensions,
+    public HeartCreationStrategy(CollisionStrategy decoratedStrategy,
+                                 GameObjectCollection gameObjects, Vector2 heartDimensions,
                                  ImageReader imageReader, WindowController windowController,
                                  Counter livesCounter) {
-        super(gameObjects);
+        this.decoratedStrategy = decoratedStrategy;
+        this.gameObjects = gameObjects;
         this.windowController = windowController;
         this.heartDimensions = heartDimensions;
         this.heartImage = imageReader.readImage(HEART_IMAGE_PATH, true);
@@ -41,7 +45,7 @@ public class HeartCreationStrategy extends CollisionStrategy {
 
     @Override
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter) {
-        super.onCollision(collidedObj, colliderObj, bricksCounter);
+        decoratedStrategy.onCollision(collidedObj, colliderObj, bricksCounter);
         Heart heart = new Heart(Vector2.ZERO, heartDimensions, heartImage, windowController,
                 gameObjects, livesCounter);
         heart.setCenter(collidedObj.getCenter());

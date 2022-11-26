@@ -175,7 +175,7 @@ public class BrickerGameManager extends GameManager {
      * @return true if any win condition holds and false otherwise
      */
     private boolean checkForWin(){
-        return userInputListener.isKeyPressed(KeyEvent.VK_W) || numOfBricks.value() == 0;
+        return userInputListener.isKeyPressed(KeyEvent.VK_W) || numOfBricks.value() <= 0;
     }
 
     /**
@@ -183,7 +183,7 @@ public class BrickerGameManager extends GameManager {
      * @return true if any lose condition holds and false otherwise
      */
     private boolean checkForLose(){
-        return numOfLives.value() == 0;
+        return numOfLives.value() <= 0;
     }
 
     public static void main(String[] args) {
@@ -258,8 +258,7 @@ public class BrickerGameManager extends GameManager {
         Vector2 brickPosition = BRICKS_INITIAL_POSITION;
         for (int i = 0; i < BRICK_ROWS_AMOUNT; i++) {
             for (int j = 0; j < BRICK_IN_ROW_AMOUNT; j++) {
-                int strategyNumber = collisionStrategyFactory.getStrategy();
-                CollisionStrategy strategy = collisionStrategyFactory.buildStrategy(strategyNumber);
+                CollisionStrategy strategy = collisionStrategyFactory.getStrategy();
                 Brick brick = new Brick(brickPosition, BRICK_DIMENSIONS, brickImage, strategy,
                         numOfBricks);
                 this.gameObjects().addGameObject(brick, Layer.STATIC_OBJECTS);

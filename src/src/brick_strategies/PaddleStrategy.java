@@ -9,7 +9,7 @@ import danogl.util.Counter;
 import danogl.util.Vector2;
 import src.gameobjects.SecondaryPaddle;
 
-public class PaddleStrategy extends CollisionStrategy{
+public class PaddleStrategy implements CollisionStrategy {
 
     private static final String BOT_PADDLE_IMAGE_PATH = "assets/botGood.png";
     private final ImageRenderable paddleImage;
@@ -17,11 +17,15 @@ public class PaddleStrategy extends CollisionStrategy{
     private final UserInputListener inputListener;
     private final Vector2 paddlePosition;
     private final Vector2 windowDimensions;
+    private final CollisionStrategy decoratedStrategy;
+    private final GameObjectCollection gameObjects;
 
-    public PaddleStrategy(GameObjectCollection gameObjects, ImageReader imageReader,
+    public PaddleStrategy(CollisionStrategy decoratedStrategy,
+                          GameObjectCollection gameObjects, ImageReader imageReader,
                           UserInputListener inputListener, Vector2 paddleDimensions,
                           Vector2 windowDimensions){
-        super(gameObjects);
+        this.decoratedStrategy = decoratedStrategy;
+        this.gameObjects = gameObjects;
         this.windowDimensions = windowDimensions;
         this.paddleImage =  imageReader.readImage(BOT_PADDLE_IMAGE_PATH, true);
         this.paddlePosition = new Vector2(windowDimensions.x() / 2, windowDimensions.y() / 2);
@@ -31,7 +35,7 @@ public class PaddleStrategy extends CollisionStrategy{
 
     @Override
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter) {
-        super.onCollision(collidedObj, colliderObj, bricksCounter);
+        decoratedStrategy.onCollision(collidedObj, colliderObj, bricksCounter);
         if(SecondaryPaddle.numOfInstances == 0){
             SecondaryPaddle paddle = new SecondaryPaddle(Vector2.ZERO,
                     paddleDimensions, paddleImage, inputListener, windowDimensions, 0 ,
