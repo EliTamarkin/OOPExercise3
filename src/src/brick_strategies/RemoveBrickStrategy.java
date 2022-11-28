@@ -28,9 +28,6 @@ public class RemoveBrickStrategy implements CollisionStrategy{
      * @param bricksCounter bricks counter of the game
      */
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter){
-        if (collidedObj.getTag().equals(Brick.getDestroyedTag())){
-            return;
-        }
         this.gameObjects.removeGameObject(collidedObj, Layer.STATIC_OBJECTS);
         bricksCounter.decrement();
     }

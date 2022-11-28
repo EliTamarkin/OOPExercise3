@@ -64,7 +64,7 @@ public class CollisionStrategyFactory {
 //            return buildStrategy(baseStrategy, strategyIndex);
 //        }
 //        return buildDoubleStrategy(baseStrategy, 0, 2);
-        return buildStrategy(baseStrategy,1);
+        return buildStrategy(baseStrategy,3);
     }
 
     public CollisionStrategy buildStrategy(CollisionStrategy decoratedStrategy, int strategyType){
