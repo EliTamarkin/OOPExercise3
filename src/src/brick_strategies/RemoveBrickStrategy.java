@@ -4,6 +4,7 @@ import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
 import danogl.collisions.Layer;
 import danogl.util.Counter;
+import src.gameobjects.Brick;
 
 /**
  * The following class represents the collision strategy acted upon collision between objects.
@@ -27,8 +28,10 @@ public class RemoveBrickStrategy implements CollisionStrategy{
      * @param bricksCounter bricks counter of the game
      */
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter){
+        if (collidedObj.getTag().equals(Brick.getDestroyedTag())){
+            return;
+        }
         this.gameObjects.removeGameObject(collidedObj, Layer.STATIC_OBJECTS);
         bricksCounter.decrement();
-        System.out.println(bricksCounter.value());
     }
 }

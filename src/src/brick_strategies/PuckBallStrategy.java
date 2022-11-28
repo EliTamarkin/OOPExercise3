@@ -17,9 +17,6 @@ public class PuckBallStrategy implements CollisionStrategy {
     private static final String PUCK_BALL_IMAGE_PATH = "assets/mockBall.png";
     private static final String PUCK_BALL_COLLISION_SOUND = "assets/blop.wav";
     private static final int NUM_OF_PUCKS = 1;
-    private static final int BALL_SIZE_RATIO = 3;
-
-    private static final int BALL_POSITION_RATIO = 2;
     private static final int BALL_SPEED = 300;
     private final ImageRenderable ballImage;
     private final Sound collisionSound;
@@ -33,8 +30,7 @@ public class PuckBallStrategy implements CollisionStrategy {
         this.gameObjects = gameObjects;
         ballImage =  imageReader.readImage(PUCK_BALL_IMAGE_PATH, true);
         collisionSound = soundReader.readSound(PUCK_BALL_COLLISION_SOUND);
-        directions = new Vector2[]{new Vector2(1, 1), new Vector2(1, -1),
-                new Vector2(-1, -1), new Vector2(-1, 1)};
+        directions = new Vector2[]{new Vector2(1, 1), new Vector2(-1, 1)};
     }
 
     @Override

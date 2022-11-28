@@ -38,7 +38,9 @@ public class SecondaryPaddle extends Paddle{
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
-        hitCount++;
+        if (other instanceof Ball){
+            hitCount++;
+        }
         if(hitCount >= MAX_HIT_COUNT){
             this.gameObjects.removeGameObject(this);
             numOfInstances--;

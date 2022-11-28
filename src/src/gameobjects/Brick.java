@@ -13,6 +13,7 @@ import danogl.util.Vector2;
  * @author Eliyahu Tamarkin
  */
 public class Brick extends GameObject {
+    private static final String DESTROYED_TAG = "Destroyed";
     private final CollisionStrategy collisionStrategy;
     private final Counter counter;
 
@@ -45,6 +46,9 @@ public class Brick extends GameObject {
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);
         collisionStrategy.onCollision(this, other, counter);
-
+        this.setTag(DESTROYED_TAG);
+    }
+    public static String getDestroyedTag(){
+        return DESTROYED_TAG;
     }
 }

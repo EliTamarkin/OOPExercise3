@@ -38,7 +38,7 @@ public class PaddleStrategy implements CollisionStrategy {
         decoratedStrategy.onCollision(collidedObj, colliderObj, bricksCounter);
         if(SecondaryPaddle.numOfInstances == 0){
             SecondaryPaddle paddle = new SecondaryPaddle(Vector2.ZERO,
-                    paddleDimensions, paddleImage, inputListener, windowDimensions, 0 ,
+                    paddleDimensions, paddleImage, inputListener, windowDimensions, 1 ,
                     gameObjects);
             paddle.setCenter(paddlePosition);
             gameObjects.addGameObject(paddle);

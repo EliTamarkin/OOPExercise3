@@ -1,6 +1,7 @@
 package src;
 
 import danogl.collisions.Layer;
+import danogl.components.CoordinateSpace;
 import src.brick_strategies.CollisionStrategy;
 import danogl.GameManager;
 import danogl.GameObject;
@@ -29,7 +30,7 @@ public class BrickerGameManager extends GameManager {
     private static final int WALL_OFFSET = 1;
     private static final int WALL_DIM = 1;
     private static final Vector2 TOP_LEFT_OFFSET_CORNER = new Vector2(0, WALL_OFFSET);
-    private static final Vector2 TOP_RIGHT_OFFSET_RIGHT = new Vector2(WINDOW_DIMENSIONS.x(),
+    private static final Vector2 TOP_RIGHT_OFFSET_CORNER = new Vector2(WINDOW_DIMENSIONS.x(),
             WALL_OFFSET);
 
     //ball
@@ -160,8 +161,7 @@ public class BrickerGameManager extends GameManager {
             if (windowController.openYesNoDialog(prompt)){
                 numOfLives.reset();
                 numOfLives.increaseBy(NUM_OF_LIVES);
-//                numOfBricks.reset();
-//                numOfBricks.increaseBy(56);
+                SecondaryPaddle.numOfInstances = 0;
                 windowController.resetGame();
             }
             else {
@@ -197,8 +197,10 @@ public class BrickerGameManager extends GameManager {
     private void initializeBackground(ImageReader imageReader){
         Renderable backgroundImage = imageReader.readImage(BACKGROUND_IMAGE_PATH,
                 false);
-        this.gameObjects().addGameObject(new GameObject(Vector2.ZERO, WINDOW_DIMENSIONS,
-                backgroundImage), Layer.BACKGROUND);
+        GameObject background = new GameObject(Vector2.ZERO, WINDOW_DIMENSIONS,
+                backgroundImage);
+        background.setCoordinateSpace(CoordinateSpace.CAMERA_COORDINATES);
+        this.gameObjects().addGameObject(background, Layer.BACKGROUND);
     }
 
     /**
@@ -212,7 +214,7 @@ public class BrickerGameManager extends GameManager {
         this.gameObjects().addGameObject(new GameObject(TOP_LEFT_OFFSET_CORNER,
                 new Vector2(WALL_DIM, WINDOW_DIMENSIONS.y()), null));
         //right wall
-        this.gameObjects().addGameObject(new GameObject(TOP_RIGHT_OFFSET_RIGHT,
+        this.gameObjects().addGameObject(new GameObject(TOP_RIGHT_OFFSET_CORNER,
                 new Vector2(WALL_DIM, WINDOW_DIMENSIONS.y()), null));
     }
 

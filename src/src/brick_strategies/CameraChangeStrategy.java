@@ -36,6 +36,8 @@ public class CameraChangeStrategy implements CollisionStrategy {
         @Override
         public void update(float deltaTime) {
             super.update(deltaTime);
+            System.out.println(collisionCount);
+            System.out.println(objectToFollow.getCollisionNum());
             int updatedCollisionsNum = objectToFollow.getCollisionNum();
             if (updatedCollisionsNum - collisionCount == MAX_OBJECT_COLLISIONS &&
                     gameManager.getCamera() != null){
