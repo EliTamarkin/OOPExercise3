@@ -4,17 +4,17 @@ import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
 import danogl.collisions.Layer;
 import danogl.util.Counter;
-import src.gameobjects.Brick;
 
 /**
- * The following class represents the collision strategy acted upon collision between objects.
+ * Brick removal strategy class.
+ * In charge of removing bricks from the bricks counter whenever a brick is being hit.
  * @author Eliyahu Tamarkin
  */
 public class RemoveBrickStrategy implements CollisionStrategy{
     protected final GameObjectCollection gameObjects;
 
     /**
-     * Constructs a new CollisionStrategy instance.
+     * Constructs a new RemoveBrickStrategy instance.
      * @param gameObjects   the games objects used for adding or removing objects from the game
      */
     public RemoveBrickStrategy(GameObjectCollection gameObjects){
@@ -22,7 +22,7 @@ public class RemoveBrickStrategy implements CollisionStrategy{
     }
 
     /**
-     * action to be done upon collision
+     * Removes a brick upon collision and decrements the bricks counter
      * @param collidedObj   object that has been collided
      * @param colliderObj   object that is the collider
      * @param bricksCounter bricks counter of the game

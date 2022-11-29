@@ -9,7 +9,11 @@ import danogl.util.Counter;
 import danogl.util.Vector2;
 import src.gameobjects.Heart;
 
-
+/**
+ * Additional hearts strategy class.
+ * In charge of initiating more hearts when requested.
+ * @author Eliyahu Tamarkin
+ */
 public class HeartCreationStrategy implements CollisionStrategy {
 
     private static final String HEART_IMAGE_PATH = "assets/heart.png";
@@ -26,10 +30,15 @@ public class HeartCreationStrategy implements CollisionStrategy {
     private final CollisionStrategy decoratedStrategy;
     private final GameObjectCollection gameObjects;
 
+
     /**
-     * Constructs a new CollisionStrategy instance.
-     *
-     * @param gameObjects the games objects used for adding or removing objects from the game
+     * Constructs a new heart strategy instance
+     * @param decoratedStrategy inner strategy
+     * @param gameObjects game objects
+     * @param heartDimensions heart instance dimensions
+     * @param imageReader image reader
+     * @param windowController window controller
+     * @param livesCounter lives counter
      */
     public HeartCreationStrategy(CollisionStrategy decoratedStrategy,
                                  GameObjectCollection gameObjects, Vector2 heartDimensions,
@@ -43,6 +52,12 @@ public class HeartCreationStrategy implements CollisionStrategy {
         this.livesCounter = livesCounter;
     }
 
+    /**
+     * Creates a new heart whenever called with the parameters given at the constructor
+     * @param collidedObj collided object
+     * @param colliderObj collider object
+     * @param bricksCounter bricks counter
+     */
     @Override
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter) {
         decoratedStrategy.onCollision(collidedObj, colliderObj, bricksCounter);

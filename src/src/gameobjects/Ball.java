@@ -46,5 +46,9 @@ public class Ball extends GameObject {
 
     }
 
-    public int getCollisionNum(){ return this.collisionNum; }
+    /**
+     * Collision counter getter
+     * @return amount of collisions
+     */
+    public int getCollisionCount(){ return this.collisionNum; }
 }

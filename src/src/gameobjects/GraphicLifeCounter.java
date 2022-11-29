@@ -31,12 +31,13 @@ public class GraphicLifeCounter extends GameObject {
      * @param widgetTopLeftCorner Position of the object, in window coordinates (pixels).
      *                      Note that (0,0) is the top-left corner of the window.
      * @param widgetDimensions    Width and height in window coordinates.
+     * @param livesCounter         lives counter representing the updated number of lives
      * @param widgetRenderable    The renderable representing the object. Can be null, in which case
      *                      the GameObject will not be rendered.
      * @param gameObjectCollection the collection of the objects in the game to be used for adding or
      *                             removing objects
      * @param numOfLives           initial number of lives to be added to the game
-     * @param livesCounter         lives counter representing the updated number of lives
+     * @param windowController     Window controller to be used when instantiating new Heart instances
      */
     public GraphicLifeCounter(Vector2 widgetTopLeftCorner, Vector2 widgetDimensions,
                               Counter livesCounter, Renderable widgetRenderable,
@@ -80,11 +81,17 @@ public class GraphicLifeCounter extends GameObject {
         }
     }
 
+    /**
+     * Removes a heart from the counter
+     */
     private void removeHeart(){
         numOfLives--;
         gameObjectCollection.removeGameObject(hearts[numOfLives], Layer.UI);
     }
 
+    /**
+     * Adds a heart to the counter
+     */
     private void addNewHeart(){
         Vector2 heartPosition = hearts[numOfLives - 1].getTopLeftCorner().add(HEART_SHIFT);
         Heart newHeart = new Heart(heartPosition, this.widgetDimensions, widgetRenderable,

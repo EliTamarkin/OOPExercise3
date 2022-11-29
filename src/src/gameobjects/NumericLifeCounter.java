@@ -1,7 +1,6 @@
 package src.gameobjects;
 
 import danogl.GameObject;
-import danogl.collisions.GameObjectCollection;
 import danogl.gui.WindowController;
 import danogl.gui.rendering.TextRenderable;
 import danogl.util.Counter;
@@ -31,6 +30,8 @@ public class NumericLifeCounter extends GameObject {
      *                      Note that (0,0) is the top-left corner of the window.
      * @param dimensions    Width and height in window coordinates.
      * @param livesCounter  counter which holds the amount of lives
+     * @param windowController window controller of the game
+     * @param heartDimensions the dimensions of the heart object
      */
     public NumericLifeCounter(Counter livesCounter, Vector2 topLeftCorner, Vector2 dimensions,
                               WindowController windowController, Vector2 heartDimensions) {
@@ -68,6 +69,10 @@ public class NumericLifeCounter extends GameObject {
         this.setTopLeftCorner(getNumericPosition());
     }
 
+    /**
+     * Moves the numeric counter according to the amount of hearts currently in the game.
+     * @return the updated position of the numeric counter.
+     */
     private Vector2 getNumericPosition(){
         return new Vector2(heartDimensions.x() * livesCounter.value() +
                 5 * livesCounter.value(), windowController.getWindowDimensions().y() - 30);

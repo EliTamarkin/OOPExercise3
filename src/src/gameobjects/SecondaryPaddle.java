@@ -15,7 +15,7 @@ public class SecondaryPaddle extends Paddle{
     private final GameObjectCollection gameObjects;
 
     /**
-     * Constructs a new Paddle instance.
+     * Constructs a new SecondaryPaddle instance.
      *
      * @param topLeftCorner    Position of the object, in window coordinates (pixels).
      *                         Note that (0,0) is the top-left corner of the window.
@@ -35,6 +35,13 @@ public class SecondaryPaddle extends Paddle{
         SecondaryPaddle.numOfInstances++;
     }
 
+    /**
+     * Updates the hit count of the given paddle and destroys when the maximal hit amount was met
+     * @param other The GameObject with which a collision occurred.
+     * @param collision Information regarding this collision.
+     *                  A reasonable elastic behavior can be achieved with:
+     *                  setVelocity(getVelocity().flipped(collision.getNormal()));
+     */
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);

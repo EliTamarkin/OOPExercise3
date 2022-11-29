@@ -10,17 +10,29 @@ import danogl.util.Counter;
 import danogl.util.Vector2;
 import src.gameobjects.Ball;
 
+
+/**
+ * Camera strategy class.
+ * In charge of initiating the special camera when requested.
+ * @author Eliyahu Tamarkin
+ */
 public class CameraChangeStrategy implements CollisionStrategy {
 
     private final CollisionStrategy decoratedStrategy;
     private final GameObjectCollection gameObjects;
 
+    /**
+     * Camera Manager class
+     * The following class is a game object that is added to the game in order to control when camera
+     * behaviour should be stopped. It checks every update whether the ball has had the requested amount
+     * of hits before reverting the camera back to normal behaviour.
+     */
     private class CameraManager extends GameObject{
 
         private final int collisionCount;
 
         /**
-         * Construct a new GameObject instance.
+         * Construct a new CameraManager instance.
          *
          * @param topLeftCorner Position of the object, in window coordinates (pixels).
          *                      Note that (0,0) is the top-left corner of the window.
@@ -30,13 +42,23 @@ public class CameraChangeStrategy implements CollisionStrategy {
          */
         public CameraManager(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable) {
             super(topLeftCorner, dimensions, renderable);
-            collisionCount = objectToFollow.getCollisionNum();
+            collisionCount = objectToFollow.getCollisionCount();
         }
 
+        /**
+         * update function to check the balls current collisions number the ball has had and reverts
+         * the camera back to normal behaviour when the requested amount of hits is met.
+         * @param deltaTime The time elapsed, in seconds, since the last frame. Can
+         *                  be used to determine a new position/velocity by multiplying
+         *                  this delta with the velocity/acceleration respectively
+         *                  and adding to the position/velocity:
+         *                  velocity += deltaTime*acceleration
+         *                  pos += deltaTime*velocity
+         */
         @Override
         public void update(float deltaTime) {
             super.update(deltaTime);
-            int updatedCollisionsNum = objectToFollow.getCollisionNum();
+            int updatedCollisionsNum = objectToFollow.getCollisionCount();
             if (updatedCollisionsNum - collisionCount - 1 >= MAX_OBJECT_COLLISIONS &&
                     gameManager.getCamera() != null){
                 gameManager.setCamera(null);
@@ -52,10 +74,14 @@ public class CameraChangeStrategy implements CollisionStrategy {
     private final WindowController windowController;
     private final Ball objectToFollow;
 
+
     /**
-     * Constructs a new CollisionStrategy instance.
-     *
-     * @param gameObjects the games objects used for adding or removing objects from the game
+     * Constructs a new CameraChangeStrategy instance
+     * @param decoratedStrategy inner strategy
+     * @param gameObjects game objects
+     * @param gameManager game manager
+     * @param windowController window controller
+     * @param objectToFollow object to cast the camera behaviour upon
      */
     public CameraChangeStrategy(CollisionStrategy decoratedStrategy, GameObjectCollection gameObjects,
                                 GameManager gameManager, WindowController windowController,
@@ -67,6 +93,13 @@ public class CameraChangeStrategy implements CollisionStrategy {
         this.objectToFollow = objectToFollow;
     }
 
+    /**
+     * initiates the cameras special behaviour upon being requested. Behaviour is initiated only if it
+     * is not currently being initiated
+     * @param collidedObj collided object
+     * @param colliderObj collider object
+     * @param bricksCounter bricks counter
+     */
     @Override
     public void onCollision(GameObject collidedObj, GameObject colliderObj, Counter bricksCounter) {
         decoratedStrategy.onCollision(collidedObj, colliderObj, bricksCounter);
