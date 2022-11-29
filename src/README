@@ -1,2 +1,25 @@
 eliyahut
 208672964
+
+Answers:
+1) I have chosen the following design patterns:
+For each desired behaviour when colliding with a brick I have created a class which is in charge for
+that behaviour when all of those classes implement the CollisionStrategy interface that declares one
+single function: OnCollision.
+Since all of the behaviours implement the same interface, it was very convenient to use the Factory
+design pattern in order to create new instances for each behaviour.
+In addition, due to the same reason, it was convenient to use the Strategy design pattern where
+in this way each brick can hold a different behaviour regarding the type of the instance.
+2) The reason for choosing the Factory design pattern was for creating a single class that will be
+in charge for generating new instances when requested. That way, if we want to add more types of
+behaviours, we can simply create the class representing the instance and make changes solely in the
+factory class.
+The reason for using the Strategy design pattern was for making it possible for a brick to hold
+each behaviour without making implementation complex.
+3) The way I have restricted the amount of behaviours to three was defining a constant in the factory
+class that restricts the amount of behaviours in the function which is in charge of the creation of a
+double behaviour.
+4) The way a brick can hold more then one behaviour is due to the fact that each behaviour decorates
+another behaviour, meaning that each behaviour holds an "inner" behaviour that will take action as well
+when casting the "decorating" behaviour. That way, the decoration chain can be expanded and make
+one bricks hold even more behaviours.
