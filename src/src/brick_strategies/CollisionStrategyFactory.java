@@ -102,7 +102,8 @@ public class CollisionStrategyFactory {
             case REGULAR:
                 return decoratedStrategy;
             case MULTIPLE_BALLS:
-                return new PuckBallStrategy(decoratedStrategy, gameObjects, imageReader, soundReader);
+                return new PuckBallStrategy(decoratedStrategy, gameObjects, windowController,
+                        imageReader, soundReader);
             case ADDITIONAL_PADDLE:
                 return  new PaddleStrategy(decoratedStrategy, gameObjects, imageReader,
                         inputListener, paddle.getDimensions(), windowDimensions);

@@ -80,7 +80,7 @@ public class Heart extends GameObject {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        if (this.getDimensions().y() > windowController.getWindowDimensions().y()){
+        if (this.getTopLeftCorner().y() > windowController.getWindowDimensions().y()){
             gameObjects.removeGameObject(this);
         }
     }
